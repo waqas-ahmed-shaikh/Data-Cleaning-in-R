@@ -1,0 +1,91 @@
+---
+title: "Data Cleaning In R"
+author: "Waqas"
+date: "2022-09-27"
+output: 
+  html_document:
+    toc: yes
+    theme: united
+---
+# Importing packages for data cleaning
+
+```{r = importing packages}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+```
+
+* The **tidyverse** package is an overall packages which includes almost everything related to data analysis.
+
+* The **lubridate** package deals with everything related to date.
+
+* The **janitor** package deals with things related to cleaning data.
+
+# Importing Raw Dataset
+
+```{r =Importing raw dataset}
+library(palmerpenguins)
+data("penguins")
+view(penguins_raw)
+```
+
+#Checking the datatype of each column
+
+```{r = checking datatype}
+str(penguins_raw)
+```
+# Cleaning the Data
+## Separating the species column
+
+```{r = separating the column}
+penguin_clean <- penguins_raw %>% separate(Species, c("species", "animal", "family"))
+colnames(penguin_clean)
+```
+This separates the column into three new column,and it separates the data inside them accordingly
+
+## Changing the date format
+
+```{r = changing date format}
+penguin_clean$date <- format(as.Date(penguin_clean$`Date Egg`), "%Y")
+colnames(penguin_clean)
+```
+
+We can see that a new date column is added here, which contains year of the data collection
+
+## Renaming Column Names
+
+```{r = renaming column}
+penguin_clean <- penguin_clean %>% rename(bill_length_mm = `Culmen Length (mm)`) %>% rename(bill_depth_mm = `Culmen Depth (mm)`)
+colnames(penguin_clean)
+```
+Here, we renamed some columns to make them more understandable
+
+## Selecting Required Columns
+
+```{r = selecting required columns}
+penguin_clean <- penguin_clean %>% select(species, Island, date, Sex, bill_length_mm, bill_depth_mm, `Flipper Length (mm)`, `Body Mass (g)`)
+colnames(penguin_clean)
+```
+This selects only the required columns for analysis purposes
+
+## Making the column names even throughout
+
+```{r = changing column names}
+penguin_clean <- penguin_clean %>% clean_names()
+colnames(penguin_clean)
+```
+This converts the column name to lower case and space is replaced by an underscore. This makes the column names look consistent throughout.
+
+## Dropping Empty Rows
+
+```{r = dropping empty rows}
+penguin_clean <- penguin_clean %>% drop_na()
+```
+This removes all the empty rows, thus makes the data more useful and clean.
+
+Thus, our data is clean now and ready for analysis
+
+
+
+
+
